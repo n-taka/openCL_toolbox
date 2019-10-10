@@ -30,27 +30,24 @@ void getAcceleratorDescription(const std::vector<cl::Device> &accelerators)
 	return;
 }
 
-void getAcceleratorDescription(const std::unordered_map<std::string, std::vector<std::pair<int, cl::Device>>> &platform_devices, const int uniqueIdx)
+void getAcceleratorDescription(const std::vector<std::pair<cl::Platform, std::vector<cl::Device>>> &platforms_devices)
 {
 	std::vector<cl::Device> accelerators;
-	for (const auto &p_d : platform_devices)
+	for (const auto &p_d : platforms_devices)
 	{
-		for (const auto &id_d : p_d.second)
+		for (const auto &d : p_d.second)
 		{
-			if (uniqueIdx < 0 || uniqueIdx == id_d.first)
-			{
-				accelerators.push_back(id_d.second);
-			}
+			accelerators.push_back(d);
 		}
 	}
 	getAcceleratorDescription(accelerators);
 }
 
-void getAccelerator(std::unordered_map<std::string, std::vector<std::pair<int, cl::Device>>> &platform_devices)
+void getAccelerator(std::vector<std::pair<cl::Platform, std::vector<cl::Device>>> &platforms_devices)
 {
 	try
 	{
-		platform_devices.clear();
+		platforms_devices.clear();
 		std::vector<cl::Platform> platforms;
 		cl::Platform::get(&platforms);
 		if (platforms.size() == 0)
@@ -58,16 +55,13 @@ void getAccelerator(std::unordered_map<std::string, std::vector<std::pair<int, c
 			std::cerr << "No platform found." << std::endl;
 			return;
 		}
-		int uniqueDeviceIndex = 0;
-		for (auto &platform : platforms)
+		platforms_devices.resize(platforms.size());
+		for (int pIdx = 0; pIdx < platforms.size(); ++pIdx)
 		{
-			std::vector<std::pair<int, cl::Device>> &deviceList = platform_devices[platform.getInfo<CL_PLATFORM_NAME>()];
-			std::vector<cl::Device> devices;
+			const cl::Platform &platform = platforms.at(pIdx);
+			platforms_devices.at(pIdx).first = platform;
+			std::vector<cl::Device> &devices = platforms_devices.at(pIdx).second;
 			platform.getDevices(CL_DEVICE_TYPE_ALL, &devices);
-			for (auto &device : devices)
-			{
-				deviceList.push_back(std::make_pair(uniqueDeviceIndex++, device));
-			}
 		}
 	}
 	catch (cl::Error const &ex)
@@ -82,17 +76,15 @@ void getAccelerator(std::unordered_map<std::string, std::vector<std::pair<int, c
 	}
 }
 
-void selectAccelerator(const std::unordered_map<std::string, std::vector<std::pair<int, cl::Device>>> &platform_devices, const std::unordered_set<int> &acceleratorIndices, openCL_toolbox::openCL_params &params)
+void selectAccelerator(const std::vector<std::pair<cl::Platform, std::vector<cl::Device>>> &platforms_devices, const int &platformIndex, const std::unordered_set<int> &acceleratorIndices, openCL_toolbox::openCL_params &params)
 {
 	params.accelerators.clear();
-	for (const auto &p_d : platform_devices)
+	for (int dIdx = 0; dIdx < platforms_devices.at(platformIndex).second.size(); ++dIdx)
 	{
-		for (const auto &id_d : p_d.second)
+		if (acceleratorIndices.find(dIdx) != acceleratorIndices.end())
 		{
-			if (acceleratorIndices.find(id_d.first) != acceleratorIndices.end())
-			{
-				params.accelerators.push_back(id_d.second);
-			}
+			const cl::Device &device = platforms_devices.at(platformIndex).second.at(dIdx);
+			params.accelerators.push_back(device);
 		}
 	}
 	if (params.accelerators.size() == 0)
@@ -104,20 +96,55 @@ void selectAccelerator(const std::unordered_map<std::string, std::vector<std::pa
 
 void selectAccelerator(openCL_toolbox::openCL_params &params)
 {
-	std::unordered_map<std::string, std::vector<std::pair<int, cl::Device>>> platform_devices;
-	getAccelerator(platform_devices);
+	std::vector<std::pair<cl::Platform, std::vector<cl::Device>>> platforms_devices;
+	getAccelerator(platforms_devices);
 
-	std::unordered_set<int> validIndices;
-	for (const auto &p_d : platform_devices)
+	// select platform
+	for (int pIdx = 0; pIdx < platforms_devices.size(); ++pIdx)
 	{
-		std::cout << p_d.first << std::endl;
-		for (const auto &id_d : p_d.second)
-		{
-			std::cout << "  " << id_d.first << ": " << id_d.second.getInfo<CL_DEVICE_NAME>() << std::endl;
-			validIndices.insert(id_d.first);
-		}
-		std::cout << std::endl;
+		const cl::Platform &platform = platforms_devices.at(pIdx).first;
+		std::cout << pIdx << ": " << platform.getInfo<CL_PLATFORM_NAME>() << std::endl;
 	}
+	std::cout << std::endl;
+
+	int platformIndex = -1;
+	while (platformIndex < 0)
+	{
+		std::cout << "Please select platform you want to use: " << std::flush;
+
+		std::string line;
+		std::getline(std::cin, line);
+
+		try
+		{
+			const int index = std::stoi(line);
+			if (index >= 0 && index < platforms_devices.size())
+			{
+				platformIndex = index;
+				break;
+			}
+			else
+			{
+				std::cerr << "Please input valid number." << std::endl;
+			}
+		}
+		catch (std::exception &)
+		{
+			std::cerr << "Please input valid number." << std::endl;
+		}
+	}
+
+	// select device
+	std::unordered_set<int> validIndices;
+	const cl::Platform &platform = platforms_devices.at(platformIndex).first;
+	std::cout << platform.getInfo<CL_PLATFORM_NAME>() << std::endl;
+	for (int dIdx = 0; dIdx < platforms_devices.at(platformIndex).second.size(); ++dIdx)
+	{
+		const cl::Device &device = platforms_devices.at(platformIndex).second.at(dIdx);
+		std::cout << "  " << dIdx << ": " << device.getInfo<CL_DEVICE_NAME>() << std::endl;
+		validIndices.insert(dIdx);
+	}
+	std::cout << std::endl;
 
 	std::unordered_set<int> acceleratorIndices;
 	while (acceleratorIndices.size() == 0)
@@ -150,7 +177,7 @@ void selectAccelerator(openCL_toolbox::openCL_params &params)
 		}
 	}
 
-	selectAccelerator(platform_devices, acceleratorIndices, params);
+	selectAccelerator(platforms_devices, platformIndex, acceleratorIndices, params);
 }
 
 } // namespace openCL_toolbox

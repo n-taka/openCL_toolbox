@@ -6,7 +6,6 @@
 
 #include <vector>
 #include <string>
-#include <unordered_map>
 #include <unordered_set>
 #include "cl.hpp"
 
@@ -18,11 +17,11 @@ namespace openCL_toolbox
 {
 
 void getAcceleratorDescription(const std::vector<cl::Device> &accelerators);
-void getAcceleratorDescription(const std::unordered_map<std::string, std::vector<std::pair<int, cl::Device>>> &platform_devices, const int uniqueIdx = -1);
+void getAcceleratorDescription(const std::vector<std::pair<cl::Platform, std::vector<cl::Device>>> &platforms_devices);
 
-void getAccelerator(std::unordered_map<std::string, std::vector<std::pair<int, cl::Device>>> &platform_devices);
+void getAccelerator(std::vector<std::pair<cl::Platform, std::vector<cl::Device>>> &platforms_devices);
 
-void selectAccelerator(const std::unordered_map<std::string, std::vector<std::pair<int, cl::Device>>> &platform_devices, const std::unordered_set<int> &acceleratorIndices, openCL_toolbox::openCL_params& params);
+void selectAccelerator(const std::vector<std::pair<cl::Platform, std::vector<cl::Device>>> &platforms_devices, const int &platformIndex, const std::unordered_set<int> &acceleratorIndices, openCL_toolbox::openCL_params& params);
 void selectAccelerator(openCL_params& params);
 
 }
