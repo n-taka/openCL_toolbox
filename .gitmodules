@@ -1,0 +1,3 @@
+[submodule "submodule/libigl"]
+	path = submodule/libigl
+	url = https://github.com/n-taka/libigl.git
