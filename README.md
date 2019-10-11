@@ -14,7 +14,7 @@ light-weight openCL toolbox for geometry processing
 git clone --recursive https://github.com/n-taka/openCL_toolbox.git
 
 # Other dependencies (eigen)
-vcpkg install eigen:x64-windows
+vcpkg install eigen3:x64-windows
 ```
 The instruction for installing [vcpkg](https://github.com/Microsoft/vcpkg) is found in [their repository](https://github.com/Microsoft/vcpkg)
 
