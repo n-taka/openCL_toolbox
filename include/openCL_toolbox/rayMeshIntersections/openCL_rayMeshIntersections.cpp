@@ -7,7 +7,6 @@
 #pragma warning(push)
 #pragma warning(disable : 4018 4129 4244 4267 4305 4566 4819 4996)
 #include "igl/per_face_normals.h"
-#include "igl/AABB.h"
 #pragma warning(pop)
 
 #include <unordered_set>
@@ -29,6 +28,27 @@ template <
 void openCL_rayMeshIntersections(
 	const Eigen::MatrixBase<DerivedV> &V,
 	const Eigen::MatrixBase<DerivedF> &F,
+	const Eigen::MatrixBase<DerivedRS> &RS,
+	const Eigen::MatrixBase<DerivedD> &D,
+	const openCL_toolbox::openCL_params &params,
+	const int maxHit,
+	std::vector<std::vector<igl::Hit>> &hits)
+{
+	igl::AABB<typename DerivedV, 3> aabb;
+	aabb.init(V, F);
+	openCL_rayMeshIntersections(
+		V, F, aabb, RS, D, params, maxHit, hits);
+}
+
+template <
+	typename DerivedV,
+	typename DerivedF,
+	typename DerivedRS,
+	typename DerivedD>
+void openCL_rayMeshIntersections(
+	const Eigen::MatrixBase<DerivedV> &V,
+	const Eigen::MatrixBase<DerivedF> &F,
+	const igl::AABB<DerivedV, 3> &aabb,
 	const Eigen::MatrixBase<DerivedRS> &RS,
 	const Eigen::MatrixBase<DerivedD> &D,
 	const openCL_toolbox::openCL_params &params,
@@ -91,8 +111,6 @@ void openCL_rayMeshIntersections(
 		Eigen::Matrix<typename DerivedV::Scalar, Eigen::Dynamic, Eigen::Dynamic> bb_mins;
 		Eigen::Matrix<typename DerivedV::Scalar, Eigen::Dynamic, Eigen::Dynamic> bb_maxs;
 		Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> elements;
-		igl::AABB<Eigen::Matrix<typename DerivedV::Scalar, Eigen::Dynamic, Eigen::Dynamic>, 3> aabb;
-		aabb.init(V, F);
 		aabb.serialize(bb_mins, bb_maxs, elements);
 		// construct serialized AABB
 		const size_t aligned_BBCount = static_cast<size_t>(std::ceil(static_cast<float>(bb_mins.rows()) / 4.0f) * 4.0f);

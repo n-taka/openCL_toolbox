@@ -69,3 +69,4 @@ set(
 target_compile_options(${PROJECT} PUBLIC "$<$<CONFIG:DEBUG>:${MY_DEBUG_OPTIONS}>")
 target_compile_options(${PROJECT} PUBLIC "$<$<CONFIG:RELEASE>:${MY_RELEASE_OPTIONS}>")
 target_compile_features(${PROJECT} PUBLIC cxx_std_11)
+target_compile_definitions(${PROJECT} PUBLIC MESH_DIR="${CMAKE_CURRENT_SOURCE_DIR}/meshes/")
