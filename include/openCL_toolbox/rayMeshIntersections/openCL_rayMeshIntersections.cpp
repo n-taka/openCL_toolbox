@@ -11,12 +11,6 @@
 
 #include <unordered_set>
 
-////
-// implementation
-////
-#define PI (3.14159265359)
-//
-
 namespace openCL_toolbox
 {
 
@@ -170,8 +164,6 @@ void openCL_rayMeshIntersections(
 
 		// because we need fixed length of buffer, we only store nearest maxHit hits.
 		const size_t aligned_TCount = static_cast<size_t>(std::ceil(static_cast<float>(aligned_RaySourcesCount * maxHit) / 16.0f) * 16.0f);
-		// intersection from outside: positive value
-		// intersection from inside : negative value
 		std::vector<cl_float4> cl_TUV(aligned_TCount, {0.0f, 0.0f, 0.0f, 0.0f});
 		std::vector<cl_int> cl_Hit(aligned_TCount, 0);
 
