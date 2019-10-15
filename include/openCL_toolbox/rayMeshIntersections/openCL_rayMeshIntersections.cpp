@@ -28,7 +28,7 @@ void openCL_rayMeshIntersections(
 	const int maxHit,
 	std::vector<std::vector<igl::Hit>> &hits)
 {
-	igl::AABB<typename DerivedV, 3> aabb;
+	igl::AABB<DerivedV, 3> aabb;
 	aabb.init(V, F);
 	openCL_rayMeshIntersections(
 		V, F, aabb, RS, D, params, maxHit, hits);
