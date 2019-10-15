@@ -1,7 +1,7 @@
 #ifndef OPENCL_UTIL_CPP
 #define OPENCL_UTIL_CPP
 #include "cl.hpp"
-#include "openCL_Util.h"
+#include "openCL_util.h"
 
 #include <vector>
 #include <iostream>
