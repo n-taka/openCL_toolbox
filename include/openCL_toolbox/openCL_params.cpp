@@ -7,14 +7,14 @@
 ////
 namespace openCL_toolbox
 {
-	openCL_params::openCL_params(const int chunkSize_) : chunkSize(chunkSize_)
-	{
-		accelerators = std::vector<cl::Device>({cl::Device::getDefault()});
-	}
-
-	openCL_params::~openCL_params()
-	{
-	}
+openCL_params::openCL_params(const int chunkSize_) : chunkSize(chunkSize_)
+{
+	accelerators = std::vector<cl::Device>({cl::Device::getDefault()});
 }
+
+openCL_params::~openCL_params()
+{
+}
+} // namespace openCL_toolbox
 
 #endif

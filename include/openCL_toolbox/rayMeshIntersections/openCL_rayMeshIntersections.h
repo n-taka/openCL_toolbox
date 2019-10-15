@@ -32,7 +32,7 @@ template <
 	typename DerivedF,
 	typename DerivedRS,
 	typename DerivedD>
-void openCL_rayMeshIntersections(
+inline void openCL_rayMeshIntersections(
 	const Eigen::MatrixBase<DerivedV> &V,
 	const Eigen::MatrixBase<DerivedF> &F,
 	const Eigen::MatrixBase<DerivedRS> &RS,
@@ -46,7 +46,7 @@ template <
 	typename DerivedF,
 	typename DerivedRS,
 	typename DerivedD>
-void openCL_rayMeshIntersections(
+inline void openCL_rayMeshIntersections(
 	const Eigen::MatrixBase<DerivedV> &V,
 	const Eigen::MatrixBase<DerivedF> &F,
 	const igl::AABB<DerivedV, 3> &aabb,

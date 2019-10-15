@@ -16,15 +16,15 @@
 namespace openCL_toolbox
 {
 
-void getAcceleratorDescription(const std::vector<cl::Device> &accelerators);
-void getAcceleratorDescription(const std::vector<std::pair<cl::Platform, std::vector<cl::Device>>> &platforms_devices);
+inline void getAcceleratorDescription(const std::vector<cl::Device> &accelerators);
+inline void getAcceleratorDescription(const std::vector<std::pair<cl::Platform, std::vector<cl::Device>>> &platforms_devices);
 
-void getAccelerator(std::vector<std::pair<cl::Platform, std::vector<cl::Device>>> &platforms_devices);
+inline void getAccelerator(std::vector<std::pair<cl::Platform, std::vector<cl::Device>>> &platforms_devices);
 
-void selectAccelerator(const std::vector<std::pair<cl::Platform, std::vector<cl::Device>>> &platforms_devices, const int &platformIndex, const std::unordered_set<int> &acceleratorIndices, openCL_toolbox::openCL_params& params);
-void selectAccelerator(openCL_params& params);
+inline void selectAccelerator(const std::vector<std::pair<cl::Platform, std::vector<cl::Device>>> &platforms_devices, const int &platformIndex, const std::unordered_set<int> &acceleratorIndices, openCL_toolbox::openCL_params &params);
+inline void selectAccelerator(openCL_params &params);
 
-}
+} // namespace openCL_toolbox
 
 #include "openCL_util.cpp"
 

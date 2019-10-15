@@ -15,14 +15,14 @@ namespace openCL_toolbox
 class openCL_params
 {
 public:
-    openCL_params(const int chunkSize_ = 100000);
-    ~openCL_params();
-    
+    inline openCL_params(const int chunkSize_ = 100000);
+    inline ~openCL_params();
+
     std::vector<cl::Device> accelerators;
     int chunkSize;
 };
 
-}
+} // namespace openCL_toolbox
 
 #include "openCL_params.cpp"
 
