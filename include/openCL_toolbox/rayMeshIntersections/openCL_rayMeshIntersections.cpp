@@ -184,7 +184,11 @@ void openCL_rayMeshIntersections(
 		std::vector<cl::CommandQueue> queueVec;
 		for (const auto &accelerator : params.accelerators)
 		{
+#ifdef __APPLE__
+			queueVec.push_back(cl::CommandQueue(context, accelerator, 0, &err));
+#else
 			queueVec.push_back(cl::CommandQueue(context, accelerator, CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, &err));
+#endif
 		}
 		int nextQueue = 0;
 
