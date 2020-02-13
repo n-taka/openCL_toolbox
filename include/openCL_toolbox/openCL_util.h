@@ -1,13 +1,14 @@
 #ifndef OPENCL_UTIL_H
 #define OPENCL_UTIL_H
-#define __CL_ENABLE_EXCEPTIONS
+#define CL_HPP_ENABLE_EXCEPTIONS
+#define CL_HPP_TARGET_OPENCL_VERSION 120
 
 #include "openCL_params.h"
 
 #include <vector>
 #include <string>
 #include <unordered_set>
-#include "cl.hpp"
+#include <CL/cl2.hpp>
 
 ////
 // implementation
