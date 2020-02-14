@@ -4,7 +4,13 @@
 #define CL_HPP_TARGET_OPENCL_VERSION 120
 #define CL_HPP_MINIMUM_OPENCL_VERSION 120
 
+#if defined(_WIN32) || defined(_WIN64) || defined(__linux__)
 #include <CL/cl2.hpp>
+#elif defined(__APPLE__)
+// cl2.hpp is not installed within macOS
+// https://github.com/KhronosGroup/OpenCL-CLHPP/releases
+#include "OpenCL/cl2.hpp"
+#endif
 #include <vector>
 
 ////
